@@ -6,10 +6,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+
 
 
 class DataEntry : AppCompatActivity() {
@@ -41,8 +42,20 @@ class DataEntry : AppCompatActivity() {
 
         findViewById<Button>(R.id.Submit).setOnClickListener {
 
+            lifecycleScope.coroutineContext.let{list ->
+                lifecycleScope.launch(IO) {
+                    (application as SleepApplication).db.SleepDao().deleteAll()
+                    (application as SleepApplication).db.SleepDao().insertAll{
+                    SleepEntity(
+                        SleepDate = dateEnter.toString(),
+                        didSleepGood = isGoodSleep
+                    )
+                }
+            }
+
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
     }
+}
 }

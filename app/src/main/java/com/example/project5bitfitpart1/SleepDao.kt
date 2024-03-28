@@ -12,7 +12,7 @@ interface SleepDao {
     fun getAll():  Flow<List<SleepEntity>>
 
     @Insert
-    fun insertAll(articles: List<SleepEntity>)
+    fun insertAll(sleep: () -> SleepEntity)
 
     @Query("DELETE FROM sleep_table")
     fun deleteAll()
